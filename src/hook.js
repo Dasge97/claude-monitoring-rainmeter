@@ -9,6 +9,8 @@ const { spawnSync } = require('child_process');
 const BASE = __dirname;
 const DIR_SESIONES = path.join(BASE, 'sesiones');
 const PANEL = path.join(BASE, 'panel.txt');
+// Lo escribe el interruptor "Avisos" del panel: 0 = solo monitorizar, sin notificaciones. Si no existe, avisa.
+const AVISOS = path.join(BASE, 'avisos.txt');
 const HORAS_CADUCIDAD = 12;
 // Sonidos de los avisos (.wav). Si no existen, la notificación suena con el sonido de Windows. Ver README.
 const SONIDO_TERMINADO = 'sonidos/terminado.wav';
@@ -71,6 +73,14 @@ function notificar(titulo, mensaje, carpeta, sonido) {
       { stdio: 'ignore', windowsHide: true, timeout: 8000 }
     );
   } catch {}
+}
+
+function avisosActivados() {
+  try {
+    return fs.readFileSync(AVISOS, 'utf8').trim() !== '0';
+  } catch {
+    return true;
+  }
 }
 
 // true si la ventana que tiene el foco en Windows es la de VS Code con esta carpeta.
@@ -234,8 +244,9 @@ function main() {
   if (!s.ts) s.ts = ahora;
 
   // Evita dos avisos seguidos por el mismo motivo (p. ej. PreToolUse de AskUserQuestion + Notification).
-  // Tampoco se avisa si el usuario ya está mirando la ventana de VS Code de esta sesión.
-  if (aviso && !(anterior === s.estado && ahora - s.ultimoAviso < 10) && !ventanaActiva(carpeta)) {
+  // No se avisa si los avisos están desactivados en el panel,
+  // ni si el usuario ya está mirando la ventana de VS Code de esta sesión.
+  if (aviso && !(anterior === s.estado && ahora - s.ultimoAviso < 10) && avisosActivados() && !ventanaActiva(carpeta)) {
     s.ultimoAviso = ahora;
     const terminado = s.estado === 'verde';
     const titulo = (terminado ? '✅ ' : '🔴 ') + s.nombre + (terminado ? ' ha terminado' : ' te necesita');

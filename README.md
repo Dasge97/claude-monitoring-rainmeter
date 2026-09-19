@@ -36,6 +36,7 @@ This panel puts that information in one place, on top of your other windows.
 - Sessions that need you are listed first and blink.
 - A Windows notification when a session finishes or needs you, with a different sound for each case.
   No notification if you are already looking at that window.
+- A switch in the panel title turns notifications off, for when you only want to monitor.
 - Click a row or a notification to bring that session's VS Code window to the front.
 - Semi-transparent and always on top; opaque when the mouse is over it. A compact mode shows only the dots.
 - Sessions disappear from the panel when you close their VS Code window.
@@ -81,6 +82,9 @@ To update: `git pull` and double-click `Instalar.cmd` again. Your sounds and pan
 **Sounds.** Put two `.wav` files in `%USERPROFILE%\.claude\panel-sesiones\sonidos\`:
 `terminado.wav` (finished) and `necesita.wav` (needs you). Without them, the default Windows sound plays.
 Short sounds with no silence at the start work best.
+
+**Monitor only.** Click the *Avisos* switch at the top right of the panel. Green: notifications on.
+Grey: the panel keeps updating, with no notifications or sounds. The setting is kept after a restart.
 
 **Full or compact mode.** Click the panel title, or right-click → *Cambiar modo*.
 

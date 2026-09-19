@@ -25,6 +25,7 @@ Todo se instala en `%USERPROFILE%\.claude\panel-sesiones`, salvo la skin, que va
 | `enfocar-vscode.exe` | Trae al frente la ventana de VS Code de una carpeta. |
 | `panel.lua` | Script de la skin de Rainmeter. Lee `panel.txt` cada medio segundo y pinta las filas. |
 | `generar-skin.js` | Genera `PanelClaude.ini` y copia `panel.lua` a la skin. |
+| `avisos.txt` | Lo escribe el interruptor *Avisos* del panel: `1` avisa, `0` solo monitoriza. Si no existe, se avisa. `hook.js` lo lee antes de cada notificación. |
 | `instalar-hooks.js` | Añade los hooks a `%USERPROFILE%\.claude\settings.json` sin tocar los que ya hay. |
 
 ## Eventos de Claude Code que se usan

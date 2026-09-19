@@ -36,6 +36,7 @@ Este panel reúne esa información en un solo sitio, encima del resto de ventana
 - Las sesiones que te necesitan salen las primeras y parpadean.
 - Una notificación de Windows cuando una sesión termina o te necesita, con un sonido distinto para cada caso.
   No avisa si ya estás mirando esa ventana.
+- Un interruptor en el título del panel apaga las notificaciones, para cuando solo quieres ver el estado.
 - Al pulsar una fila o una notificación, se pone delante la ventana de VS Code de esa sesión.
 - Semitransparente y siempre encima; opaco al pasar el ratón. Tiene un modo mínimo que solo muestra los puntos.
 - Al cerrar una ventana de VS Code, sus sesiones desaparecen del panel.
@@ -79,6 +80,9 @@ Para actualizar: `git pull` y otra vez doble clic en `Instalar.cmd`. Se conserva
 **Sonidos.** Pon dos ficheros `.wav` en `%USERPROFILE%\.claude\panel-sesiones\sonidos\`:
 `terminado.wav` y `necesita.wav`. Sin ellos suena el aviso normal de Windows.
 Funcionan mejor los sonidos cortos y sin silencio al principio.
+
+**Solo monitorizar.** Pulsa el interruptor *Avisos*, arriba a la derecha del panel. Verde: avisos activados.
+Gris: el panel se sigue actualizando, sin notificaciones ni sonidos. Se conserva al reiniciar.
 
 **Modo completo o mínimo.** Clic en el título del panel, o botón derecho → *Cambiar modo*.
 

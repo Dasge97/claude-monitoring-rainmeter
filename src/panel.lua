@@ -16,6 +16,24 @@ local TICKS_PIDS = 20         -- cada cuántas actualizaciones se piden los clau
 local tick = 0
 local expandido = false
 
+-- avisos.txt lo lee hook.js: "0" = solo monitorizar, sin notificaciones. Si no existe, se avisa.
+function leerAvisos()
+  local f = io.open(archivoAvisos, 'r')
+  if not f then return true end
+  local valor = f:read('*l')
+  f:close()
+  return valor ~= '0'
+end
+
+local function pintarInterruptor()
+  local fondo = avisos and '70,200,110,255' or '90,90,96,255'
+  local bola = avisos and 21 or 7
+  SKIN:Bang('!SetOption', 'Interruptor', 'Shape', 'Rectangle 0,0,28,14,7 | Fill Color ' .. fondo .. ' | StrokeWidth 0')
+  SKIN:Bang('!SetOption', 'Interruptor', 'Shape2', 'Ellipse ' .. bola .. ',7,5 | Fill Color 255,255,255,255 | StrokeWidth 0')
+  SKIN:Bang('!SetOption', 'Interruptor', 'ToolTipText',
+    avisos and 'Avisos activados. Clic para solo monitorizar.' or 'Solo monitorizar. Clic para activar los avisos.')
+end
+
 function Initialize()
   archivo = SKIN:GetVariable('Archivo')
   enfocar = SKIN:GetVariable('Enfocar')
@@ -25,6 +43,8 @@ function Initialize()
   ancho = tonumber(SKIN:GetVariable('Ancho'))
   altoTitulo = tonumber(SKIN:GetVariable('AltoTitulo'))
   modo = SKIN:GetVariable('Modo')
+  archivoAvisos = SKIN:GetVariable('ArchivoAvisos')
+  avisos = leerAvisos()
   medidaPids = SKIN:GetMeasure('MeasurePids')
   SKIN:Bang('!CommandMeasure', 'MeasurePids', 'Run')
 end
@@ -126,11 +146,16 @@ function Update()
   local anchoFondo, altoFondo
   if completo then
     SKIN:Bang('!ShowMeter', 'Titulo')
+    SKIN:Bang('!ShowMeter', 'EtiquetaAvisos')
+    SKIN:Bang('!ShowMeter', 'Interruptor')
+    pintarInterruptor()
     if n == 0 then SKIN:Bang('!ShowMeter', 'SinSesiones') else SKIN:Bang('!HideMeter', 'SinSesiones') end
     anchoFondo = ancho
     altoFondo = altoTitulo + math.max(n, 1) * altoFila + 2 * margen - 3
   else
     SKIN:Bang('!HideMeter', 'Titulo')
+    SKIN:Bang('!HideMeter', 'EtiquetaAvisos')
+    SKIN:Bang('!HideMeter', 'Interruptor')
     SKIN:Bang('!HideMeter', 'SinSesiones')
     anchoFondo = math.max(n, 1) * 18 + 2 * margen - 6
     altoFondo = 12 + 2 * margen
@@ -146,6 +171,16 @@ end
 
 function Expandir(valor)
   expandido = valor
+  Update()
+end
+
+function CambiarAvisos()
+  avisos = not avisos
+  local f = io.open(archivoAvisos, 'w')
+  if f then
+    f:write(avisos and '1' or '0')
+    f:close()
+  end
   Update()
 end
 

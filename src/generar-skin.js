@@ -48,6 +48,7 @@ Information=Estado de las sesiones de Claude Code. Lo alimenta ${INSTALACION}\\h
 [Variables]
 Archivo=${INSTALACION}\\panel.txt
 Enfocar=${INSTALACION}\\enfocar-vscode.exe
+ArchivoAvisos=${INSTALACION}\\avisos.txt
 Util=${INSTALACION}\\panel-util.exe
 Modo=${modo}
 MaxFilas=${MAX}
@@ -90,6 +91,30 @@ SolidColor=0,0,0,1
 Text=Sesiones de Claude
 ToolTipText=Clic: cambiar a modo mínimo
 LeftMouseUpAction=[!CommandMeasure MeasureLua "CambiarModo()"]
+
+; Interruptor de avisos, a la derecha del título. panel.lua lo pinta y guarda el estado en avisos.txt.
+[EtiquetaAvisos]
+Meter=String
+X=(#Ancho# - #Margen# - 38)
+Y=(#Margen# - 2)
+StringAlign=Right
+FontFace=#Fuente#
+FontSize=8
+StringStyle=Bold
+StringCase=Upper
+FontColor=255,255,255,110
+AntiAlias=1
+SolidColor=0,0,0,1
+Text=Avisos
+LeftMouseUpAction=[!CommandMeasure MeasureLua "CambiarAvisos()"]
+
+[Interruptor]
+Meter=Shape
+X=(#Ancho# - #Margen# - 32)
+Y=(#Margen# - 1)
+Shape=Rectangle 0,0,28,14,7 | Fill Color 70,200,110,255 | StrokeWidth 0
+Shape2=Ellipse 21,7,5 | Fill Color 255,255,255,255 | StrokeWidth 0
+LeftMouseUpAction=[!CommandMeasure MeasureLua "CambiarAvisos()"]
 
 [SinSesiones]
 Meter=String

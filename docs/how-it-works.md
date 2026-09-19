@@ -26,6 +26,7 @@ File names are in Spanish.
 | `enfocar-vscode.exe` | Brings a folder's VS Code window to the front. |
 | `panel.lua` | Rainmeter skin script. Reads `panel.txt` every half second and draws the rows. |
 | `generar-skin.js` | Generates `PanelClaude.ini` and copies `panel.lua` into the skin. |
+| `avisos.txt` | Written by the panel's *Avisos* switch: `1` notifies, `0` only monitors. If missing, notifications are on. `hook.js` reads it before each notification. |
 | `instalar-hooks.js` | Adds the hooks to `%USERPROFILE%\.claude\settings.json` without touching existing ones. |
 
 ## Claude Code events used
