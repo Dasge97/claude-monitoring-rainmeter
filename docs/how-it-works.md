@@ -70,18 +70,22 @@ the beginning of each session's first message (`web-tienda · arregla el login�
 
 There is no notification if you are looking at the conversation that finished or needs you. To know this:
 
-- VS Code titles the window `<active tab> - <folder> - Visual Studio Code` and shortens the tab name with `…`.
 - Claude Code stores each conversation's title in its transcript (`"type":"ai-title"`). The hook reads it on every
   notification, from the last megabyte of the transcript, and saves it in the session.
-- If the active tab matches the beginning of the conversation title, you are looking at it.
+- VS Code titles the window `<active tab> - <folder> - Visual Studio Code` and shortens the tab name with `…`.
+  The active tab is compared against every known conversation's title.
+- A terminal (Windows Terminal, etc.) titles the window with the conversation name, sometimes with a prefix
+  (`OC | Saludo inicial`). The whole title is compared against this conversation's title.
 
 | Where you are | Notifies? |
 |---|---|
-| In another window | Yes |
-| In the project window, on that conversation's tab | No |
-| In the project window, on another conversation's tab | Yes |
-| In the project window, on a file, and it is the only conversation in the project | No |
-| In the project window, on a file, and there are several conversations in the project | Yes |
+| In another window (a browser, another app) | Yes |
+| On this conversation's VS Code tab | No |
+| On another known conversation's VS Code tab | Yes |
+| On a VS Code file, and it is the only conversation in the project | No |
+| On a VS Code file, and there are several conversations in the project | Yes |
+| In this conversation's terminal | No |
+| In another conversation's terminal | Yes |
 
 To test these rules without real notifications: `PANEL_SIMULAR=1 node hook.js < event.json` prints
 `AVISARÍA: ...` instead of notifying.

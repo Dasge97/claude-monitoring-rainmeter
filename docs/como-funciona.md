@@ -69,18 +69,22 @@ el principio del primer mensaje de cada una (`web-tienda · arregla el login…`
 
 No se avisa si estás mirando la conversación que termina o te necesita. Para saberlo:
 
-- VS Code titula la ventana `<pestaña activa> - <carpeta> - Visual Studio Code` y corta la pestaña con `…`.
 - Claude Code guarda el título de cada conversación en su registro (`"type":"ai-title"`). El hook lo lee en cada aviso,
   del último mega del registro, y lo guarda en la sesión.
-- Si la pestaña activa coincide con el principio del título de la conversación, la estás mirando.
+- VS Code titula la ventana `<pestaña activa> - <carpeta> - Visual Studio Code` y corta la pestaña con `…`.
+  Se compara la pestaña activa con el título de cada conversación conocida.
+- Una terminal (Windows Terminal, etc.) titula la ventana con el nombre de la conversación, a veces con un prefijo
+  (`OC | Saludo inicial`). Se compara el título entero con el de esta conversación.
 
 | Dónde estás | ¿Avisa? |
 |---|---|
-| En otra ventana | Sí |
-| En la ventana del proyecto, en la pestaña de esa conversación | No |
-| En la ventana del proyecto, en la pestaña de otra conversación | Sí |
-| En la ventana del proyecto, en un fichero, y es la única conversación del proyecto | No |
-| En la ventana del proyecto, en un fichero, y hay varias conversaciones en el proyecto | Sí |
+| En otra ventana (un navegador, otro programa) | Sí |
+| En la pestaña de VS Code de esa conversación | No |
+| En la pestaña de VS Code de otra conversación conocida | Sí |
+| En un fichero de VS Code, y es la única conversación del proyecto | No |
+| En un fichero de VS Code, y hay varias conversaciones en el proyecto | Sí |
+| En la terminal de esa conversación | No |
+| En la terminal de otra conversación | Sí |
 
 Para probar estas reglas sin notificaciones reales: `PANEL_SIMULAR=1 node hook.js < evento.json` escribe
 `AVISARÍA: ...` en vez de avisar.

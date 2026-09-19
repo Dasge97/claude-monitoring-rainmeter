@@ -113,42 +113,62 @@ function tituloConversacion(registro) {
   }
 }
 
-// Decide si el usuario ya está mirando esta conversación, para no avisarle.
-// VS Code titula la ventana "<pestaña activa> - <carpeta> - Visual Studio Code" y corta la pestaña con "…".
-// Si la pestaña activa es la de una conversación de Claude, su nombre es el principio del título de la conversación.
-function estaMirando(carpeta, sesion, sesionId) {
-  let titulo;
-  try {
-    titulo = spawnSync(path.join(BASE, 'panel-util.exe'), ['titulo'],
-      { encoding: 'utf8', windowsHide: true, timeout: 2000 }).stdout || '';
-  } catch {
-    return false;
-  }
-  const nombre = path.basename(carpeta);
-  const SUFIJO = ' - Visual Studio Code';
-  if (!titulo.endsWith(SUFIJO)) return false;
-  const resto = titulo.slice(0, -SUFIJO.length);
-  let pestana;
-  if (resto === nombre) pestana = '';
-  else if (resto.endsWith(' - ' + nombre)) pestana = resto.slice(0, -(' - ' + nombre).length);
-  else return false; // es otra ventana de VS Code
+// ¿El texto que muestra la ventana ("mostrado") corresponde a esta conversación ("titulo")?
+// La ventana recorta con "…" (VS Code) o antepone un prefijo (una terminal, p. ej. "OC | Saludo inicial"),
+// así que basta con que uno contenga al otro. Se pide un mínimo de longitud para no acertar por casualidad.
+function coincideTitulo(mostrado, titulo) {
+  if (!mostrado || !titulo) return false;
+  const s = mostrado.replace(/[.…]+$/, '').trim();
+  const c = titulo.trim();
+  if (s.length < 4 || c.length < 4) return false;
+  return c.includes(s) || s.includes(c);
+}
 
-  const esLaPestanaDe = t => !!t && !!pestana &&
-    (pestana === t || (pestana.endsWith('…') && t.startsWith(pestana.slice(0, -1).trimEnd())));
-  if (esLaPestanaDe(sesion.titulo)) return true;
-
-  // Otras conversaciones abiertas en el mismo proyecto
+function otrasConversaciones(sesionId) {
   const otras = [];
   for (const f of fs.readdirSync(DIR_SESIONES)) {
     if (!f.endsWith('.json') || f === sesionId + '.json') continue;
     try {
-      const o = JSON.parse(fs.readFileSync(path.join(DIR_SESIONES, f), 'utf8'));
-      if (o.carpeta === carpeta) otras.push(o);
+      otras.push(JSON.parse(fs.readFileSync(path.join(DIR_SESIONES, f), 'utf8')));
     } catch {}
   }
-  if (otras.some(o => esLaPestanaDe(o.titulo))) return false; // mira otra conversación del proyecto
-  // La pestaña activa es un fichero u otra cosa: solo se da por vista si es la única conversación del proyecto.
-  return otras.length === 0;
+  return otras;
+}
+
+// Decide si el usuario ya está mirando esta conversación, para no avisarle.
+// VS Code titula la ventana "<pestaña activa> - <carpeta> - Visual Studio Code".
+// Una terminal (Windows Terminal, etc.) titula la ventana con el nombre de la conversación, a veces con un prefijo.
+function estaMirando(carpeta, sesion, sesionId) {
+  let titulo;
+  try {
+    titulo = process.env.PANEL_TITULO !== undefined
+      ? process.env.PANEL_TITULO
+      : (spawnSync(path.join(BASE, 'panel-util.exe'), ['titulo'],
+          { encoding: 'utf8', windowsHide: true, timeout: 2000 }).stdout || '');
+  } catch {
+    return false;
+  }
+
+  const SUFIJO = ' - Visual Studio Code';
+  if (titulo.endsWith(SUFIJO)) {
+    // Ventana de VS Code: se separa la pestaña activa de la carpeta.
+    const nombre = path.basename(carpeta);
+    const resto = titulo.slice(0, -SUFIJO.length);
+    let pestana;
+    if (resto === nombre) pestana = '';
+    else if (resto.endsWith(' - ' + nombre)) pestana = resto.slice(0, -(' - ' + nombre).length);
+    else return false; // otra ventana de VS Code (otro proyecto)
+
+    if (coincideTitulo(pestana, sesion.titulo)) return true;
+    const otras = otrasConversaciones(sesionId);
+    // La pestaña activa es la de otra conversación conocida (esté donde esté su carpeta).
+    if (pestana && otras.some(o => coincideTitulo(pestana, o.titulo))) return false;
+    // La pestaña activa es un fichero u otra cosa: solo se da por vista si es la única conversación del proyecto.
+    return otras.filter(o => o.carpeta === carpeta).length === 0;
+  }
+
+  // Ventana de terminal: el título es el de la conversación. Cada sesión tiene su propia ventana.
+  return coincideTitulo(titulo, sesion.titulo);
 }
 
 // En Windows el rename falla (EPERM) si otro hook de la misma sesión está escribiendo a la vez
