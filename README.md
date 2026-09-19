@@ -1,107 +1,142 @@
-# claude-monitoring-rainmeter
+<div align="center">
 
-Panel de escritorio para Windows que muestra qué está haciendo cada sesión de Claude Code
-(extensión de VS Code o CLI) y avisa con una notificación cuando una sesión termina o te necesita.
+# Claude Monitoring para Rainmeter
 
-Pensado para trabajar con varias ventanas de VS Code a la vez, cada una con su agente.
+**Todas tus sesiones de Claude Code, en un vistazo.**<br>
+Un panel discreto en el escritorio que te dice qué agente está trabajando, cuál ha terminado y cuál te está esperando.
 
-## Qué hace
+[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.0.0-2ea44f)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
+[![Windows 10 | 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)](#instalación)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-hooks-D97757?logo=claude&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
+[![Rainmeter](https://img.shields.io/badge/Rainmeter-skin-19A2E0?logo=rainmeter&logoColor=white)](https://www.rainmeter.net)
+[![Node.js](https://img.shields.io/badge/Node.js-LTS-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Instalación](https://img.shields.io/badge/instalaci%C3%B3n-doble%20clic-brightgreen)](#instalación)
+[![Último commit](https://img.shields.io/github/last-commit/Dasge97/claude-monitoring-rainmeter?label=%C3%BAltimo%20cambio)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
 
-- **Panel en Rainmeter**, semitransparente y siempre encima. Una fila por sesión con:
-  - un punto de color: amarillo = trabajando, rojo = te necesita (parpadea), verde = ha terminado,
-    gris = sin actividad (una sesión terminada pasa a gris a los 10 minutos);
-  - el nombre de la carpeta del proyecto;
-  - lo que está haciendo ahora mismo (el comando, el fichero que edita, la pregunta que te hace…);
-  - hace cuánto cambió.
-- Las filas se ordenan por urgencia: primero las rojas.
-- Si hay dos sesiones en el mismo proyecto, cada fila muestra el principio de su primer mensaje.
-- Clic en una fila: trae al frente la ventana de VS Code de esa sesión.
-- **Modo mínimo**: solo los puntos de colores; se despliega al pasar el ratón.
-  Se cambia con clic en el título o en el menú del botón derecho.
-- **Notificación de Windows** cuando una sesión termina o te necesita, con un sonido distinto para cada caso.
-  Al pulsarla se trae al frente la ventana de VS Code de esa sesión.
-  No salta si ya tienes delante la ventana de esa sesión.
-- Al cerrar una ventana de VS Code, sus sesiones desaparecen del panel en unos 10 segundos.
+<img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code: una en rojo esperando permiso, dos en amarillo trabajando, una en verde terminada y una en gris" width="404">
 
-No hay que hacer nada en cada sesión: los hooks van en la configuración global de Claude Code
-y se aplican a todas.
+[![Instalar](https://img.shields.io/badge/Instalar-en%201%20minuto-2ea44f?style=for-the-badge)](#instalación)
+&nbsp;
+[![Cómo funciona por dentro](https://img.shields.io/badge/C%C3%B3mo%20funciona-por%20dentro-555?style=for-the-badge)](docs/como-funciona.md)
+
+</div>
+
+---
+
+## ¿Trabajas con varios agentes a la vez?
+
+Tienes tres o cuatro ventanas de VS Code abiertas, cada una con Claude Code haciendo algo.
+Y te pasas el día saltando entre ellas para ver cuál ha terminado, cuál se ha quedado esperando
+un permiso desde hace diez minutos y cuál sigue trabajando.
+
+**Claude Monitoring te lo dice sin que tengas que mirar.**
+
+## Lo que hace
+
+🚦 **Un semáforo por sesión.** Amarillo si está trabajando, rojo si te necesita, verde si ha terminado.
+
+👀 **Qué está haciendo, en directo.** El comando que ejecuta, el fichero que edita o la pregunta que te hace.
+
+🔴 **Lo urgente, arriba.** Las sesiones que te esperan suben las primeras y parpadean hasta que las atiendes.
+
+🔔 **Te avisa cuando acaba o te necesita.** Notificación de Windows con tu propio sonido, uno distinto para cada caso.
+Y no te molesta si ya estás mirando esa ventana.
+
+🖱️ **Un clic y estás allí.** Pulsa una fila o una notificación y se pone delante la ventana de VS Code de esa sesión.
+
+🪶 **Discreto.** Semitransparente, siempre encima y opaco solo cuando pasas el ratón.
+Con un modo mínimo que se queda en una fila de puntos.
+
+🧹 **Se limpia solo.** Cierras una ventana de VS Code y sus sesiones desaparecen del panel.
+
+⚙️ **Sin configurar nada en cada sesión.** Funciona con todas tus sesiones, en todos tus proyectos, desde que lo instalas.
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="docs/img/notificacion.png" alt="Notificación de Windows: web-tienda ha terminado" width="370"><br><sub>Aviso al terminar, con el último mensaje de Claude</sub></td>
+<td align="center"><img src="docs/img/panel-minimo.png" alt="Modo mínimo: una fila de puntos de colores" width="124"><br><sub>Modo mínimo</sub></td>
+</tr>
+</table>
+</div>
+
+## El semáforo
+
+| | Estado | Cuándo |
+|:-:|---|---|
+| 🔴 | **Te necesita** | Pide permiso para una herramienta, te hace una pregunta o tiene un plan para que lo revises. Parpadea. |
+| 🟡 | **Trabajando** | Está pensando o usando una herramienta. |
+| 🟢 | **Ha terminado** | Acaba de responder. Se queda en verde 10 minutos. |
+| ⚪ | **En espera** | Sesión abierta sin actividad reciente. |
 
 ## Instalación
 
-1. Descarga el ZIP de la [última versión](https://github.com/Dasge97/claude-monitoring-rainmeter/releases/latest).
-2. Descomprímelo.
-3. Doble clic en `Instalar.cmd`.
-
-Si falta algo de lo que necesita, el instalador lo instala solo. Windows pedirá permiso de administrador para cada programa:
-
-- [Rainmeter](https://www.rainmeter.net), que dibuja el panel.
-- [Node.js](https://nodejs.org), que ejecuta el hook.
-- [Git para Windows](https://git-scm.com/download/win), por Git Bash, que es donde Claude Code ejecuta los hooks.
-
-Los instala con `winget`. Si ese Windows no tiene `winget`, descarga el instalador oficial de cada uno.
-También hace falta .NET Framework 4, que ya viene con Windows 10 y 11.
-
-Desde el código fuente es igual: clona el repositorio y haz doble clic en `Instalar.cmd`.
-
-El instalador:
-
-1. Instala lo que falte de la lista anterior.
-2. Copia el código a `%USERPROFILE%\.claude\panel-sesiones`.
-3. Compila `panel-util.exe` y `enfocar-vscode.exe`.
-4. Registra el enlace `panelclaude://` en `HKCU\Software\Classes` (para que la notificación abra la ventana).
-5. Añade los hooks a `%USERPROFILE%\.claude\settings.json`. Antes guarda una copia en
-   `settings.json.antes-panel-sesiones.bak`. No toca los hooks que ya tengas.
-6. Genera la skin `PanelClaude` en la carpeta de skins de Rainmeter y la activa.
-7. Hace que Rainmeter arranque con Windows, si no lo hacía ya.
-
-Para actualizar, vuelve a hacer doble clic en `Instalar.cmd`. Conserva tus sonidos y tus ajustes del panel.
-
-Para publicar una versión nueva: `powershell -ExecutionPolicy Bypass -File empaquetar.ps1 -Version X.Y.Z`
-genera `dist\claude-monitoring-rainmeter-X.Y.Z.zip`, que se sube a GitHub Releases.
-Las sesiones de Claude Code que ya estaban abiertas pueden necesitar reiniciarse para leer los hooks.
-
-## Sonidos
-
-El repositorio no incluye sonidos. Pon dos ficheros `.wav` en `%USERPROFILE%\.claude\panel-sesiones\sonidos\`
-(o en la carpeta `sonidos/` del repositorio antes de instalar):
-
-- `terminado.wav`: cuando una sesión termina.
-- `necesita.wav`: cuando una sesión te pide permiso o te hace una pregunta.
-
-Si no están, la notificación suena con el sonido normal de Windows.
-Conviene que no tengan silencio al principio, para que suenen a la vez que aparece la notificación.
-Páginas para buscar sonidos: [Mixkit](https://mixkit.co/free-sound-effects/), [Pixabay](https://pixabay.com/sound-effects/),
-[Myinstants](https://www.myinstants.com).
-
-## Cómo funciona
-
-```
-Claude Code ──(hooks)──> hook.js ──> sesiones/<id>.json ──> panel.txt ──> Rainmeter (panel.lua)
-                            │
-                            └──> notificar.ps1 ──> notificación de Windows + sonido
+```powershell
+git clone https://github.com/Dasge97/claude-monitoring-rainmeter.git
 ```
 
-- `hook.js` se ejecuta en cada evento de cada sesión (`SessionStart`, `UserPromptSubmit`, `PreToolUse`,
-  `PostToolUse`, `Notification`, `Stop`, `SessionEnd`). Guarda el estado de la sesión en `sesiones/<id>.json`
-  y reescribe `panel.txt` con todas las sesiones, una por línea.
-- `panel.lua` (script de la skin) lee `panel.txt` cada medio segundo y pinta las filas.
-- `panel-util.exe` hace tres consultas que no se pueden hacer desde Rainmeter ni desde Node sin dependencias:
-  - `padre <pid>`: qué `claude.exe` ha lanzado el hook (para saber cuándo se cierra la sesión);
-  - `pids`: qué `claude.exe` siguen vivos (el panel lo consulta cada 10 segundos);
-  - `activa <carpeta>`: si la ventana con el foco es la de VS Code de esa carpeta.
-- `enfocar-vscode.exe` busca la ventana de VS Code por su título (`… - <carpeta> - Visual Studio Code`)
-  y la trae al frente. Si no la encuentra, la abre con `code`.
+Y **doble clic en `Instalar.cmd`**. Eso es todo.
 
-Detalles que costó descubrir:
+También vale descargar el repositorio con **Code → Download ZIP**, descomprimirlo y hacer doble clic en `Instalar.cmd`.
 
-- Rainmeter solo muestra bien los acentos si el `.ini` y el `.lua` están en UTF-16 LE.
-  Por eso el original de `panel.lua` está en UTF-8 y `generar-skin.js` copia a la skin una versión convertida.
-- Claude Code mata los procesos hijos del hook cuando el hook termina.
-  Por eso el hook espera a que la notificación y el sonido acaben.
-- Abrir `vscode://file/...` hace que VS Code pida confirmación. Por eso se usa `enfocar-vscode.exe`.
+> Si te falta [Rainmeter](https://www.rainmeter.net), [Node.js](https://nodejs.org) o
+> [Git para Windows](https://git-scm.com/download/win), el instalador los instala por ti.
+> Windows te pedirá permiso de administrador para cada uno.
 
-## Desinstalar
+Para actualizar, `git pull` y otra vez doble clic en `Instalar.cmd`. Tus sonidos y tus ajustes se conservan.
 
-1. En Rainmeter, descarga la skin `PanelClaude` y borra su carpeta de skins.
-2. Quita de `%USERPROFILE%\.claude\settings.json` los hooks cuyo comando contiene `panel-sesiones/hook.js`.
-3. Borra `%USERPROFILE%\.claude\panel-sesiones` y la clave `HKCU\Software\Classes\panelclaude`.
+## Hazlo tuyo
+
+**🔊 Tus sonidos.** Pon dos ficheros `.wav` en `%USERPROFILE%\.claude\panel-sesiones\sonidos\`:
+`terminado.wav` y `necesita.wav`. Sin ellos suena el aviso normal de Windows.
+Ideas en [Myinstants](https://www.myinstants.com), [Mixkit](https://mixkit.co/free-sound-effects/) o [Pixabay](https://pixabay.com/sound-effects/).
+
+**📐 Modo completo o mínimo.** Clic en el título del panel, o botón derecho → *Cambiar modo*.
+
+**📍 Donde quieras.** Arrastra el panel a cualquier sitio de la pantalla. Se queda ahí.
+
+## Preguntas frecuentes
+
+<details>
+<summary><b>¿Ralentiza a Claude Code?</b></summary>
+
+No se nota. Cada evento lanza un proceso muy corto, de unos 50-60 ms.
+Solo los avisos esperan un par de segundos más, mientras suena el sonido.
+En ese momento Claude está parado igualmente: ha terminado o está esperando tu permiso.
+</details>
+
+<details>
+<summary><b>¿Funciona con Claude Code en la terminal?</b></summary>
+
+Sí. El panel y las notificaciones funcionan con cualquier sesión de Claude Code.
+Lo único exclusivo de VS Code es el clic para traer su ventana al frente.
+</details>
+
+<details>
+<summary><b>¿Qué toca de mi sistema?</b></summary>
+
+- Añade unos hooks a `%USERPROFILE%\.claude\settings.json`, sin tocar los que ya tengas. Antes guarda una copia.
+- Copia sus ficheros en `%USERPROFILE%\.claude\panel-sesiones`.
+- Crea la skin `PanelClaude` en Rainmeter.
+- Registra el enlace `panelclaude://` para tu usuario, para que las notificaciones abran la ventana.
+
+Nada se envía fuera de tu PC.
+</details>
+
+<details>
+<summary><b>¿Cómo lo desinstalo?</b></summary>
+
+Los pasos están en [Cómo funciona por dentro → Desinstalar](docs/como-funciona.md#desinstalar).
+</details>
+
+---
+
+<div align="center">
+
+**¿Quieres saber cómo está hecho?**
+
+[![Cómo funciona por dentro](https://img.shields.io/badge/Leer-C%C3%B3mo%20funciona%20por%20dentro-555?style=for-the-badge)](docs/como-funciona.md)
+
+<sub>Hecho para trabajar con varios agentes de Claude Code a la vez sin perder el hilo.</sub>
+
+</div>

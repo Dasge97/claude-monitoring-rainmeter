@@ -1,4 +1,4 @@
-# Sonidos: cada uno pone los suyos (ver README)
+﻿# Sonidos: cada uno pone los suyos (ver README)
 sonidos/*
 !sonidos/.gitkeep
 
@@ -11,5 +11,3 @@ sesiones/
 errores.log
 *.tmp
 
-# ZIP generado por empaquetar.ps1
-dist/
