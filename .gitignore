@@ -1,0 +1,12 @@
+# Sonidos: cada uno pone los suyos (ver README)
+sonidos/*
+!sonidos/.gitkeep
+
+# Binarios: los compila instalar.ps1
+*.exe
+
+# Ficheros que genera el hook en tiempo de ejecución
+panel.txt
+sesiones/
+errores.log
+*.tmp
