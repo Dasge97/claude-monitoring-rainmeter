@@ -63,6 +63,11 @@ function describirHerramienta(nombre, entrada) {
 // Se espera a que termine: Claude Code mata los procesos hijos del hook al acabar,
 // y PowerShell tarda cerca de un segundo en mostrar la notificación.
 function notificar(titulo, mensaje, carpeta, sonido) {
+  // Para probar las reglas sin notificaciones reales: PANEL_SIMULAR=1 node hook.js < evento.json
+  if (process.env.PANEL_SIMULAR) {
+    process.stdout.write('AVISARÍA: ' + titulo + '\n');
+    return;
+  }
   try {
     spawnSync(
       'powershell.exe',
@@ -83,15 +88,67 @@ function avisosActivados() {
   }
 }
 
-// true si la ventana que tiene el foco en Windows es la de VS Code con esta carpeta.
-function ventanaActiva(carpeta) {
+// Título de la conversación ("ai-title", o el que le haya puesto el usuario) según el registro de Claude Code.
+// Se vuelve a escribir a menudo, así que basta con leer el último mega del registro.
+function tituloConversacion(registro) {
+  if (!registro) return null;
   try {
-    const r = spawnSync(path.join(BASE, 'panel-util.exe'), ['activa', carpeta],
-      { encoding: 'utf8', windowsHide: true, timeout: 2000 });
-    return r.stdout === '1';
+    const fd = fs.openSync(registro, 'r');
+    const tam = fs.fstatSync(fd).size;
+    const leer = Math.min(tam, 1024 * 1024);
+    const buf = Buffer.alloc(leer);
+    fs.readSync(fd, buf, 0, leer, tam - leer);
+    fs.closeSync(fd);
+    let titulo = null;
+    for (const linea of buf.toString('utf8').split('\n')) {
+      if (!/"type":"[a-z-]*title"/.test(linea)) continue;
+      try {
+        const o = JSON.parse(linea);
+        titulo = o.customTitle || o.aiTitle || o.title || titulo;
+      } catch {}
+    }
+    return titulo;
+  } catch {
+    return null;
+  }
+}
+
+// Decide si el usuario ya está mirando esta conversación, para no avisarle.
+// VS Code titula la ventana "<pestaña activa> - <carpeta> - Visual Studio Code" y corta la pestaña con "…".
+// Si la pestaña activa es la de una conversación de Claude, su nombre es el principio del título de la conversación.
+function estaMirando(carpeta, sesion, sesionId) {
+  let titulo;
+  try {
+    titulo = spawnSync(path.join(BASE, 'panel-util.exe'), ['titulo'],
+      { encoding: 'utf8', windowsHide: true, timeout: 2000 }).stdout || '';
   } catch {
     return false;
   }
+  const nombre = path.basename(carpeta);
+  const SUFIJO = ' - Visual Studio Code';
+  if (!titulo.endsWith(SUFIJO)) return false;
+  const resto = titulo.slice(0, -SUFIJO.length);
+  let pestana;
+  if (resto === nombre) pestana = '';
+  else if (resto.endsWith(' - ' + nombre)) pestana = resto.slice(0, -(' - ' + nombre).length);
+  else return false; // es otra ventana de VS Code
+
+  const esLaPestanaDe = t => !!t && !!pestana &&
+    (pestana === t || (pestana.endsWith('…') && t.startsWith(pestana.slice(0, -1).trimEnd())));
+  if (esLaPestanaDe(sesion.titulo)) return true;
+
+  // Otras conversaciones abiertas en el mismo proyecto
+  const otras = [];
+  for (const f of fs.readdirSync(DIR_SESIONES)) {
+    if (!f.endsWith('.json') || f === sesionId + '.json') continue;
+    try {
+      const o = JSON.parse(fs.readFileSync(path.join(DIR_SESIONES, f), 'utf8'));
+      if (o.carpeta === carpeta) otras.push(o);
+    } catch {}
+  }
+  if (otras.some(o => esLaPestanaDe(o.titulo))) return false; // mira otra conversación del proyecto
+  // La pestaña activa es un fichero u otra cosa: solo se da por vista si es la única conversación del proyecto.
+  return otras.length === 0;
 }
 
 // En Windows el rename falla (EPERM) si otro hook de la misma sesión está escribiendo a la vez
@@ -244,9 +301,13 @@ function main() {
   if (!s.ts) s.ts = ahora;
 
   // Evita dos avisos seguidos por el mismo motivo (p. ej. PreToolUse de AskUserQuestion + Notification).
+  // Cada aviso actualiza el título de la conversación; estaMirando() lo compara con la pestaña activa.
+  if (aviso) s.titulo = tituloConversacion(d.transcript_path) || s.titulo;
+
   // No se avisa si los avisos están desactivados en el panel,
-  // ni si el usuario ya está mirando la ventana de VS Code de esta sesión.
-  if (aviso && !(anterior === s.estado && ahora - s.ultimoAviso < 10) && avisosActivados() && !ventanaActiva(carpeta)) {
+  // ni si el usuario ya está mirando esta conversación.
+  if (aviso && !(anterior === s.estado && ahora - s.ultimoAviso < 10) && avisosActivados() &&
+      !estaMirando(carpeta, s, d.session_id)) {
     s.ultimoAviso = ahora;
     const terminado = s.estado === 'verde';
     const titulo = (terminado ? '✅ ' : '🔴 ') + s.nombre + (terminado ? ' ha terminado' : ' te necesita');

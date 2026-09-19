@@ -64,7 +64,27 @@ the beginning of each session's first message (`web-tienda · arregla el login�
 |---|---|---|
 | `padre <pid>` | PID of the ancestor `claude.exe` | The hook stores it in the session the first time. |
 | `pids` | PIDs of the running `claude.exe` processes (`,12,34,`) | The panel asks every 10 s and hides sessions whose process is gone. |
-| `activa <folder>` | `1` or `0` | If the focused window is that folder's VS Code window, no notification. |
+| `titulo` | Title of the focused window | To know whether you are already looking at the conversation that notifies (see below). |
+
+## When there is no notification
+
+There is no notification if you are looking at the conversation that finished or needs you. To know this:
+
+- VS Code titles the window `<active tab> - <folder> - Visual Studio Code` and shortens the tab name with `…`.
+- Claude Code stores each conversation's title in its transcript (`"type":"ai-title"`). The hook reads it on every
+  notification, from the last megabyte of the transcript, and saves it in the session.
+- If the active tab matches the beginning of the conversation title, you are looking at it.
+
+| Where you are | Notifies? |
+|---|---|
+| In another window | Yes |
+| In the project window, on that conversation's tab | No |
+| In the project window, on another conversation's tab | Yes |
+| In the project window, on a file, and it is the only conversation in the project | No |
+| In the project window, on a file, and there are several conversations in the project | Yes |
+
+To test these rules without real notifications: `PANEL_SIMULAR=1 node hook.js < event.json` prints
+`AVISARÍA: ...` instead of notifying.
 
 ## Finding the VS Code window
 

@@ -1,7 +1,7 @@
 // Utilidades de procesos para el panel de sesiones de Claude.
 //   panel-util.exe padre <pid>   -> PID del claude.exe antecesor de <pid> (0 si no hay)
 //   panel-util.exe pids          -> PIDs de todos los claude.exe vivos, en formato ",12,34,"
-//   panel-util.exe activa <carpeta> -> 1 si la ventana con el foco es la de VS Code con esa carpeta, 0 si no
+//   panel-util.exe titulo        -> título de la ventana que tiene el foco, en UTF-8
 // Compilar: csc /target:exe /out:panel-util.exe panel-util.cs
 using System;
 using System.Collections.Generic;
@@ -27,17 +27,6 @@ class PanelUtil
     [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern int GetWindowText(IntPtr hWnd, StringBuilder s, int max);
 
-    // Mismo criterio que enfocar-vscode.cs: el título es "<fichero> - <carpeta> - Visual Studio Code"
-    // o "<carpeta> - Visual Studio Code".
-    static bool EsVentanaDe(string titulo, string nombreCarpeta)
-    {
-        const string SUFIJO = " - Visual Studio Code";
-        int fin = titulo.LastIndexOf(SUFIJO, StringComparison.Ordinal);
-        if (fin < 0) return false;
-        string resto = titulo.Substring(0, fin);
-        return resto == nombreCarpeta || resto.EndsWith(" - " + nombreCarpeta, StringComparison.Ordinal);
-    }
-
     // PID -> (PID del padre, nombre del ejecutable)
     static Dictionary<uint, KeyValuePair<uint, string>> Procesos()
     {
@@ -55,12 +44,13 @@ class PanelUtil
     static void Main(string[] args)
     {
         if (args.Length == 0) return;
-        if (args[0] == "activa" && args.Length > 1)
+        if (args[0] == "titulo")
         {
             var sbTitulo = new StringBuilder(512);
             GetWindowText(GetForegroundWindow(), sbTitulo, sbTitulo.Capacity);
-            string nombre = System.IO.Path.GetFileName(args[1].Replace('/', '\\').TrimEnd('\\'));
-            Console.Write(EsVentanaDe(sbTitulo.ToString(), nombre) ? "1" : "0");
+            var salida = Console.OpenStandardOutput();
+            var bytes = Encoding.UTF8.GetBytes(sbTitulo.ToString());
+            salida.Write(bytes, 0, bytes.Length);
             return;
         }
         var procs = Procesos();

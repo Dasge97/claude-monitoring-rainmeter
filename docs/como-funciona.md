@@ -63,7 +63,27 @@ el principio del primer mensaje de cada una (`web-tienda · arregla el login…`
 |---|---|---|
 | `padre <pid>` | PID del `claude.exe` antecesor | El hook lo guarda en la sesión la primera vez. |
 | `pids` | PIDs de los `claude.exe` vivos (`,12,34,`) | El panel lo pide cada 10 s y oculta las sesiones cuyo proceso ya no existe. |
-| `activa <carpeta>` | `1` o `0` | Si la ventana con el foco es la de VS Code de esa carpeta, no se avisa. |
+| `titulo` | Título de la ventana con el foco | Para saber si ya estás mirando la conversación que avisa (ver abajo). |
+
+## Cuándo no se avisa
+
+No se avisa si estás mirando la conversación que termina o te necesita. Para saberlo:
+
+- VS Code titula la ventana `<pestaña activa> - <carpeta> - Visual Studio Code` y corta la pestaña con `…`.
+- Claude Code guarda el título de cada conversación en su registro (`"type":"ai-title"`). El hook lo lee en cada aviso,
+  del último mega del registro, y lo guarda en la sesión.
+- Si la pestaña activa coincide con el principio del título de la conversación, la estás mirando.
+
+| Dónde estás | ¿Avisa? |
+|---|---|
+| En otra ventana | Sí |
+| En la ventana del proyecto, en la pestaña de esa conversación | No |
+| En la ventana del proyecto, en la pestaña de otra conversación | Sí |
+| En la ventana del proyecto, en un fichero, y es la única conversación del proyecto | No |
+| En la ventana del proyecto, en un fichero, y hay varias conversaciones en el proyecto | Sí |
+
+Para probar estas reglas sin notificaciones reales: `PANEL_SIMULAR=1 node hook.js < evento.json` escribe
+`AVISARÍA: ...` en vez de avisar.
 
 ## Encontrar la ventana de VS Code
 
