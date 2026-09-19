@@ -44,7 +44,7 @@ Este panel reúne esa información en un solo sitio, encima del resto de ventana
 <div align="center">
 <table>
 <tr>
-<td align="center"><img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code en distintos estados" width="380"><br><sub>Modo completo</sub></td>
+<td align="center"><img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code en distintos estados, dos de ellas en el mismo proyecto" width="440"><br><sub>Modo completo</sub></td>
 <td align="center"><img src="docs/img/notificacion.png" alt="Notificación de Windows: web-tienda ha terminado" width="370"><br><sub>Notificación con el último mensaje de Claude</sub></td>
 <td align="center"><img src="docs/img/panel-minimo.png" alt="Modo mínimo: una fila de puntos de colores" width="124"><br><sub>Modo mínimo</sub></td>
 </tr>

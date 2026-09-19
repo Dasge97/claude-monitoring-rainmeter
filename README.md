@@ -44,7 +44,7 @@ This panel puts that information in one place, on top of your other windows.
 <div align="center">
 <table>
 <tr>
-<td align="center"><img src="docs/img/panel-completo.png" alt="Panel with five Claude Code sessions in different states" width="380"><br><sub>Full mode</sub></td>
+<td align="center"><img src="docs/img/panel-completo.png" alt="Panel with five Claude Code sessions in different states, two of them in the same project" width="440"><br><sub>Full mode</sub></td>
 <td align="center"><img src="docs/img/notificacion.png" alt="Windows notification: web-tienda has finished" width="370"><br><sub>Notification with Claude's last message</sub></td>
 <td align="center"><img src="docs/img/panel-minimo.png" alt="Compact mode: a row of coloured dots" width="124"><br><sub>Compact mode</sub></td>
 </tr>

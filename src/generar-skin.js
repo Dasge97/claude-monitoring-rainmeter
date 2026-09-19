@@ -54,8 +54,9 @@ MaxFilas=${MAX}
 AltoFila=26
 AltoTitulo=24
 Margen=8
-Ancho=380
-AnchoMaxNombre=150
+Ancho=440
+AnchoMaxNombre=230
+AltoLinea=19
 Fuente=Segoe UI
 
 ; Devuelve los PID de los claude.exe vivos (",12,34,"). panel.lua lo lanza cada 10 s.
@@ -122,12 +123,19 @@ Hidden=1
 Meter=String
 X=(#Margen# + 26)
 Y=0
+; Una sola línea: el ancho crece con el texto hasta AnchoMaxNombre y lo que no cabe se corta con "…".
 ClipString=2
 ClipStringW=#AnchoMaxNombre#
+ClipStringH=#AltoLinea#
 FontFace=#Fuente#
 FontSize=10
 StringStyle=Bold
 FontColor=255,255,255,235
+; Si hay varias sesiones en el proyecto, lo que va tras " · " (su primer mensaje) sale en gris y sin negrita.
+InlinePattern= · .*
+InlineSetting=Color | 255,255,255,140
+InlinePattern2= · .*
+InlineSetting2=Weight | 400
 AntiAlias=1
 SolidColor=0,0,0,1
 MouseOverAction=[!SetOption Nombre${i} FontColor "130,180,255,255"][!UpdateMeter Nombre${i}][!Redraw]
