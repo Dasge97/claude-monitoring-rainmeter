@@ -13,7 +13,7 @@ Un panel discreto en el escritorio que te dice qué agente está trabajando, cu�
 [![Instalación](https://img.shields.io/badge/instalaci%C3%B3n-doble%20clic-brightgreen)](#instalación)
 [![Último commit](https://img.shields.io/github/last-commit/Dasge97/claude-monitoring-rainmeter?label=%C3%BAltimo%20cambio)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
 
-<img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code: una en rojo esperando permiso, dos en amarillo trabajando, una en verde terminada y una en gris" width="404">
+<img src="docs/img/portada.png" alt="Escritorio con tres ventanas de VS Code con Claude Code. Arriba a la derecha, el panel con cinco sesiones: una en rojo esperando permiso, dos en amarillo trabajando, una en verde terminada y una en gris. Abajo a la derecha, la notificación de que web-tienda ha terminado." width="100%">
 
 [![Instalar](https://img.shields.io/badge/Instalar-en%201%20minuto-2ea44f?style=for-the-badge)](#instalación)
 &nbsp;
@@ -54,6 +54,7 @@ Con un modo mínimo que se queda en una fila de puntos.
 <div align="center">
 <table>
 <tr>
+<td align="center"><img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code en distintos estados" width="380"><br><sub>Modo completo</sub></td>
 <td align="center"><img src="docs/img/notificacion.png" alt="Notificación de Windows: web-tienda ha terminado" width="370"><br><sub>Aviso al terminar, con el último mensaje de Claude</sub></td>
 <td align="center"><img src="docs/img/panel-minimo.png" alt="Modo mínimo: una fila de puntos de colores" width="124"><br><sub>Modo mínimo</sub></td>
 </tr>
