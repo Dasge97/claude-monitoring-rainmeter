@@ -1,6 +1,6 @@
 # Cómo funciona por dentro
 
-[← Volver al README](../README.md)
+[← Volver al README](../README.es.md) · [English](how-it-works.md)
 
 ## Esquema
 
@@ -31,7 +31,7 @@ Todo se instala en `%USERPROFILE%\.claude\panel-sesiones`, salvo la skin, que va
 
 | Evento | Estado en el panel | Aviso |
 |---|---|---|
-| `SessionStart` | gris, "Lista" | — |
+| `SessionStart` | gris, "Pausado" | — |
 | `UserPromptSubmit` | amarillo, "Pensando: <tu mensaje>" | — |
 | `PreToolUse` | amarillo, con lo que va a hacer (comando, fichero, búsqueda…) | — |
 | `PreToolUse` de `AskUserQuestion` o `ExitPlanMode` | rojo, "Te está haciendo una pregunta" / "Tiene un plan…" | sí |
@@ -41,6 +41,9 @@ Todo se instala en `%USERPROFILE%\.claude\panel-sesiones`, salvo la skin, que va
 | `SessionEnd` | se quita del panel | — |
 
 El aviso de "lleva un rato esperando" (`idle_prompt`) se ignora: la sesión ya está en verde.
+
+Una sesión en verde pasa a gris, "Pausado", a los 10 minutos. Ese cambio lo hace `panel.lua` al pintar;
+no hay ningún evento de Claude Code detrás.
 
 ## Formato de `panel.txt`
 

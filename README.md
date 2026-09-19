@@ -1,143 +1,128 @@
 <div align="center">
 
-# Claude Monitoring para Rainmeter
+# Claude Monitoring for Rainmeter
 
-**Todas tus sesiones de Claude Code, en un vistazo.**<br>
-Un panel discreto en el escritorio que te dice qué agente está trabajando, cuál ha terminado y cuál te está esperando.
+A desktop panel for Windows that shows what each Claude Code session is doing<br>
+and notifies you when one finishes or needs your input.
 
-[![Versión](https://img.shields.io/badge/versi%C3%B3n-1.0.0-2ea44f)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
-[![Windows 10 | 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)](#instalación)
+**English** · [Español](README.es.md)
+
+[![Version](https://img.shields.io/badge/version-1.0.0-2ea44f)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
+[![Windows 10 | 11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4)](#installation)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-hooks-D97757?logo=claude&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
 [![Rainmeter](https://img.shields.io/badge/Rainmeter-skin-19A2E0?logo=rainmeter&logoColor=white)](https://www.rainmeter.net)
 [![Node.js](https://img.shields.io/badge/Node.js-LTS-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
-[![Instalación](https://img.shields.io/badge/instalaci%C3%B3n-doble%20clic-brightgreen)](#instalación)
-[![Último commit](https://img.shields.io/github/last-commit/Dasge97/claude-monitoring-rainmeter?label=%C3%BAltimo%20cambio)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
+[![Install](https://img.shields.io/badge/install-double%20click-brightgreen)](#installation)
+[![Last commit](https://img.shields.io/github/last-commit/Dasge97/claude-monitoring-rainmeter)](https://github.com/Dasge97/claude-monitoring-rainmeter/commits/main)
 
-<img src="docs/img/portada.png" alt="Escritorio con tres ventanas de VS Code con Claude Code. Arriba a la derecha, el panel con cinco sesiones: una en rojo esperando permiso, dos en amarillo trabajando, una en verde terminada y una en gris. Abajo a la derecha, la notificación de que web-tienda ha terminado." width="100%">
+<img src="docs/img/portada.png" alt="Desktop with three VS Code windows running Claude Code. Top right, the panel with five sessions: one red waiting for permission, two yellow working, one green finished and one grey paused. Bottom right, a notification saying web-tienda has finished." width="100%">
 
-[![Instalar](https://img.shields.io/badge/Instalar-en%201%20minuto-2ea44f?style=for-the-badge)](#instalación)
+[![Install](https://img.shields.io/badge/Install-2ea44f?style=for-the-badge)](#installation)
 &nbsp;
-[![Cómo funciona por dentro](https://img.shields.io/badge/C%C3%B3mo%20funciona-por%20dentro-555?style=for-the-badge)](docs/como-funciona.md)
+[![How it works](https://img.shields.io/badge/How%20it%20works-555?style=for-the-badge)](docs/how-it-works.md)
 
 </div>
 
----
+## Why
 
-## ¿Trabajas con varios agentes a la vez?
+If you run Claude Code in several VS Code windows at once, you end up switching between them to check
+which one has finished, which one is waiting for a permission and which one is still working.
+This panel puts that information in one place, on top of your other windows.
 
-Tienes tres o cuatro ventanas de VS Code abiertas, cada una con Claude Code haciendo algo.
-Y te pasas el día saltando entre ellas para ver cuál ha terminado, cuál se ha quedado esperando
-un permiso desde hace diez minutos y cuál sigue trabajando.
+## Features
 
-**Claude Monitoring te lo dice sin que tengas que mirar.**
-
-## Lo que hace
-
-🚦 **Un semáforo por sesión.** Amarillo si está trabajando, rojo si te necesita, verde si ha terminado.
-
-👀 **Qué está haciendo, en directo.** El comando que ejecuta, el fichero que edita o la pregunta que te hace.
-
-🔴 **Lo urgente, arriba.** Las sesiones que te esperan suben las primeras y parpadean hasta que las atiendes.
-
-🔔 **Te avisa cuando acaba o te necesita.** Notificación de Windows con tu propio sonido, uno distinto para cada caso.
-Y no te molesta si ya estás mirando esa ventana.
-
-🖱️ **Un clic y estás allí.** Pulsa una fila o una notificación y se pone delante la ventana de VS Code de esa sesión.
-
-🪶 **Discreto.** Semitransparente, siempre encima y opaco solo cuando pasas el ratón.
-Con un modo mínimo que se queda en una fila de puntos.
-
-🧹 **Se limpia solo.** Cierras una ventana de VS Code y sus sesiones desaparecen del panel.
-
-⚙️ **Sin configurar nada en cada sesión.** Funciona con todas tus sesiones, en todos tus proyectos, desde que lo instalas.
+- One row per session: a status colour, the project folder and what it is doing right now
+  (the command it runs, the file it edits, the question it asks).
+- Sessions that need you are listed first and blink.
+- A Windows notification when a session finishes or needs you, with a different sound for each case.
+  No notification if you are already looking at that window.
+- Click a row or a notification to bring that session's VS Code window to the front.
+- Semi-transparent and always on top; opaque when the mouse is over it. A compact mode shows only the dots.
+- Sessions disappear from the panel when you close their VS Code window.
+- Works for every session in every project once installed. Nothing to set up per session.
 
 <div align="center">
 <table>
 <tr>
-<td align="center"><img src="docs/img/panel-completo.png" alt="Panel con cinco sesiones de Claude Code en distintos estados" width="380"><br><sub>Modo completo</sub></td>
-<td align="center"><img src="docs/img/notificacion.png" alt="Notificación de Windows: web-tienda ha terminado" width="370"><br><sub>Aviso al terminar, con el último mensaje de Claude</sub></td>
-<td align="center"><img src="docs/img/panel-minimo.png" alt="Modo mínimo: una fila de puntos de colores" width="124"><br><sub>Modo mínimo</sub></td>
+<td align="center"><img src="docs/img/panel-completo.png" alt="Panel with five Claude Code sessions in different states" width="380"><br><sub>Full mode</sub></td>
+<td align="center"><img src="docs/img/notificacion.png" alt="Windows notification: web-tienda has finished" width="370"><br><sub>Notification with Claude's last message</sub></td>
+<td align="center"><img src="docs/img/panel-minimo.png" alt="Compact mode: a row of coloured dots" width="124"><br><sub>Compact mode</sub></td>
 </tr>
 </table>
 </div>
 
-## El semáforo
+## Status colours
 
-| | Estado | Cuándo |
+| | Status | When |
 |:-:|---|---|
-| 🔴 | **Te necesita** | Pide permiso para una herramienta, te hace una pregunta o tiene un plan para que lo revises. Parpadea. |
-| 🟡 | **Trabajando** | Está pensando o usando una herramienta. |
-| 🟢 | **Ha terminado** | Acaba de responder. Se queda en verde 10 minutos. |
-| ⚪ | **En espera** | Sesión abierta sin actividad reciente. |
+| 🔴 | Needs you | It asks for permission to use a tool, asks you a question or has a plan for you to review. Blinks. |
+| 🟡 | Working | It is thinking or using a tool. |
+| 🟢 | Finished | It has just replied. Stays green for 10 minutes. |
+| ⚪ | Paused | No recent activity: it finished more than 10 minutes ago, or it is open and has not been used yet. |
 
-## Instalación
+## Installation
 
 ```powershell
 git clone https://github.com/Dasge97/claude-monitoring-rainmeter.git
 ```
 
-Y **doble clic en `Instalar.cmd`**. Eso es todo.
+Then double-click `Instalar.cmd`. You can also use **Code → Download ZIP**, unzip it and double-click `Instalar.cmd`.
 
-También vale descargar el repositorio con **Code → Download ZIP**, descomprimirlo y hacer doble clic en `Instalar.cmd`.
+If [Rainmeter](https://www.rainmeter.net), [Node.js](https://nodejs.org) or [Git for Windows](https://git-scm.com/download/win)
+is missing, the installer installs it with `winget`, or with the official installer if `winget` is not available.
+Windows asks for administrator permission for each one. Git for Windows is needed because Claude Code runs hooks in Git Bash.
 
-> Si te falta [Rainmeter](https://www.rainmeter.net), [Node.js](https://nodejs.org) o
-> [Git para Windows](https://git-scm.com/download/win), el instalador los instala por ti.
-> Windows te pedirá permiso de administrador para cada uno.
+To update: `git pull` and double-click `Instalar.cmd` again. Your sounds and panel settings are kept.
 
-Para actualizar, `git pull` y otra vez doble clic en `Instalar.cmd`. Tus sonidos y tus ajustes se conservan.
+> **Language.** The panel and the notifications are currently in Spanish.
 
-## Hazlo tuyo
+## Customisation
 
-**🔊 Tus sonidos.** Pon dos ficheros `.wav` en `%USERPROFILE%\.claude\panel-sesiones\sonidos\`:
-`terminado.wav` y `necesita.wav`. Sin ellos suena el aviso normal de Windows.
-Ideas en [Myinstants](https://www.myinstants.com), [Mixkit](https://mixkit.co/free-sound-effects/) o [Pixabay](https://pixabay.com/sound-effects/).
+**Sounds.** Put two `.wav` files in `%USERPROFILE%\.claude\panel-sesiones\sonidos\`:
+`terminado.wav` (finished) and `necesita.wav` (needs you). Without them, the default Windows sound plays.
+Short sounds with no silence at the start work best.
 
-**📐 Modo completo o mínimo.** Clic en el título del panel, o botón derecho → *Cambiar modo*.
+**Full or compact mode.** Click the panel title, or right-click → *Cambiar modo*.
 
-**📍 Donde quieras.** Arrastra el panel a cualquier sitio de la pantalla. Se queda ahí.
+**Position.** Drag the panel anywhere on the screen. It stays there.
 
-## Preguntas frecuentes
+## FAQ
 
 <details>
-<summary><b>¿Ralentiza a Claude Code?</b></summary>
+<summary><b>Does it slow down Claude Code?</b></summary>
 
-No se nota. Cada evento lanza un proceso muy corto, de unos 50-60 ms.
-Solo los avisos esperan un par de segundos más, mientras suena el sonido.
-En ese momento Claude está parado igualmente: ha terminado o está esperando tu permiso.
+Each event starts a short Node.js process, about 50-60 ms.
+Notifications take a couple of seconds longer while the sound plays; at that point Claude has finished or is waiting for you anyway.
 </details>
 
 <details>
-<summary><b>¿Funciona con Claude Code en la terminal?</b></summary>
+<summary><b>Does it work with Claude Code in the terminal?</b></summary>
 
-Sí. El panel y las notificaciones funcionan con cualquier sesión de Claude Code.
-Lo único exclusivo de VS Code es el clic para traer su ventana al frente.
+Yes. The panel and the notifications work with any Claude Code session.
+Only the click that brings the window to the front is specific to VS Code.
 </details>
 
 <details>
-<summary><b>¿Qué toca de mi sistema?</b></summary>
+<summary><b>What does it change on my system?</b></summary>
 
-- Añade unos hooks a `%USERPROFILE%\.claude\settings.json`, sin tocar los que ya tengas. Antes guarda una copia.
-- Copia sus ficheros en `%USERPROFILE%\.claude\panel-sesiones`.
-- Crea la skin `PanelClaude` en Rainmeter.
-- Registra el enlace `panelclaude://` para tu usuario, para que las notificaciones abran la ventana.
+- It adds hooks to `%USERPROFILE%\.claude\settings.json` without touching the ones you already have. It saves a backup first.
+- It copies its files to `%USERPROFILE%\.claude\panel-sesiones`.
+- It creates the `PanelClaude` skin in Rainmeter.
+- It registers the `panelclaude://` link for your user, so notifications can open the window.
 
-Nada se envía fuera de tu PC.
+Nothing is sent outside your PC.
 </details>
 
 <details>
-<summary><b>¿Cómo lo desinstalo?</b></summary>
+<summary><b>How do I uninstall it?</b></summary>
 
-Los pasos están en [Cómo funciona por dentro → Desinstalar](docs/como-funciona.md#desinstalar).
+See [How it works → Uninstall](docs/how-it-works.md#uninstall).
 </details>
 
 ---
 
 <div align="center">
 
-**¿Quieres saber cómo está hecho?**
-
-[![Cómo funciona por dentro](https://img.shields.io/badge/Leer-C%C3%B3mo%20funciona%20por%20dentro-555?style=for-the-badge)](docs/como-funciona.md)
-
-<sub>Hecho para trabajar con varios agentes de Claude Code a la vez sin perder el hilo.</sub>
+[How it works](docs/how-it-works.md) · [Cómo funciona](docs/como-funciona.md) · [Español](README.es.md)
 
 </div>

@@ -10,7 +10,7 @@ local colores = {
   gris     = '150,150,150',
 }
 local urgencia = { rojo = 1, amarillo = 2, verde = 3, gris = 4 }
-local MINUTOS_VERDE = 10      -- después, una sesión terminada se muestra en gris
+local MINUTOS_VERDE = 10      -- después, una sesión terminada se muestra en gris como "Pausado"
 local TICKS_PIDS = 20         -- cada cuántas actualizaciones se piden los claude.exe vivos (20 x 0,5 s = 10 s)
 
 local tick = 0
@@ -70,7 +70,10 @@ function Update()
   local ahora = os.time()
   local sesiones = leerSesiones()
   for _, s in ipairs(sesiones) do
-    if s.estado == 'verde' and ahora - s.ts > MINUTOS_VERDE * 60 then s.estado = 'gris' end
+    if s.estado == 'verde' and ahora - s.ts > MINUTOS_VERDE * 60 then
+      s.estado = 'gris'
+      s.detalle = 'Pausado'
+    end
   end
   table.sort(sesiones, function(a, b)
     local ua, ub = urgencia[a.estado] or 5, urgencia[b.estado] or 5

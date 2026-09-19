@@ -169,7 +169,7 @@ function main() {
   try { s = JSON.parse(fs.readFileSync(ruta, 'utf8')); } catch {}
   const carpeta = d.cwd || (s && s.carpeta) || '';
   const ahora = Date.now() / 1000;
-  if (!s) s = { inicio: ahora, estado: 'gris', detalle: 'Lista', ultimoAviso: 0 };
+  if (!s) s = { inicio: ahora, estado: 'gris', detalle: 'Pausado', ultimoAviso: 0 };
   s.carpeta = carpeta;
   s.nombre = path.basename(carpeta) || 'sesión';
   if (s.pid === undefined) s.pid = pidClaude();
@@ -181,7 +181,7 @@ function main() {
     case 'SessionStart':
       if (d.source === 'compact') return;
       s.estado = 'gris';
-      s.detalle = 'Lista';
+      s.detalle = 'Pausado';
       break;
     case 'UserPromptSubmit':
       s.estado = 'amarillo';
