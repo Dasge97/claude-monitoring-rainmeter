@@ -26,32 +26,38 @@ Pensado para trabajar con varias ventanas de VS Code a la vez, cada una con su a
 No hay que hacer nada en cada sesión: los hooks van en la configuración global de Claude Code
 y se aplican a todas.
 
-## Requisitos
-
-- Windows 10 u 11.
-- [Rainmeter](https://www.rainmeter.net). Por defecto arranca con Windows, así que el panel también.
-- [Node.js](https://nodejs.org).
-- Claude Code con Git Bash (el que usa Claude Code en Windows).
-- .NET Framework 4 (viene con Windows; se usa su compilador de C#).
-
 ## Instalación
 
-```powershell
-git clone https://github.com/Dasge97/claude-monitoring-rainmeter.git
-cd claude-monitoring-rainmeter
-powershell -ExecutionPolicy Bypass -File instalar.ps1
-```
+1. Descarga el ZIP de la [última versión](https://github.com/Dasge97/claude-monitoring-rainmeter/releases/latest).
+2. Descomprímelo.
+3. Doble clic en `Instalar.cmd`.
+
+Si falta algo de lo que necesita, el instalador lo instala solo. Windows pedirá permiso de administrador para cada programa:
+
+- [Rainmeter](https://www.rainmeter.net), que dibuja el panel.
+- [Node.js](https://nodejs.org), que ejecuta el hook.
+- [Git para Windows](https://git-scm.com/download/win), por Git Bash, que es donde Claude Code ejecuta los hooks.
+
+Los instala con `winget`. Si ese Windows no tiene `winget`, descarga el instalador oficial de cada uno.
+También hace falta .NET Framework 4, que ya viene con Windows 10 y 11.
+
+Desde el código fuente es igual: clona el repositorio y haz doble clic en `Instalar.cmd`.
 
 El instalador:
 
-1. Copia el código a `%USERPROFILE%\.claude\panel-sesiones`.
-2. Compila `panel-util.exe` y `enfocar-vscode.exe`.
-3. Registra el enlace `panelclaude://` en `HKCU\Software\Classes` (para que la notificación abra la ventana).
-4. Añade los hooks a `%USERPROFILE%\.claude\settings.json`. Antes guarda una copia en
+1. Instala lo que falte de la lista anterior.
+2. Copia el código a `%USERPROFILE%\.claude\panel-sesiones`.
+3. Compila `panel-util.exe` y `enfocar-vscode.exe`.
+4. Registra el enlace `panelclaude://` en `HKCU\Software\Classes` (para que la notificación abra la ventana).
+5. Añade los hooks a `%USERPROFILE%\.claude\settings.json`. Antes guarda una copia en
    `settings.json.antes-panel-sesiones.bak`. No toca los hooks que ya tengas.
-5. Genera la skin `PanelClaude` en la carpeta de skins de Rainmeter y la activa.
+6. Genera la skin `PanelClaude` en la carpeta de skins de Rainmeter y la activa.
+7. Hace que Rainmeter arranque con Windows, si no lo hacía ya.
 
-Para actualizar después de cambiar algo en `src/`, vuelve a ejecutar `instalar.ps1`.
+Para actualizar, vuelve a hacer doble clic en `Instalar.cmd`. Conserva tus sonidos y tus ajustes del panel.
+
+Para publicar una versión nueva: `powershell -ExecutionPolicy Bypass -File empaquetar.ps1 -Version X.Y.Z`
+genera `dist\claude-monitoring-rainmeter-X.Y.Z.zip`, que se sube a GitHub Releases.
 Las sesiones de Claude Code que ya estaban abiertas pueden necesitar reiniciarse para leer los hooks.
 
 ## Sonidos
@@ -62,7 +68,7 @@ El repositorio no incluye sonidos. Pon dos ficheros `.wav` en `%USERPROFILE%\.cl
 - `terminado.wav`: cuando una sesión termina.
 - `necesita.wav`: cuando una sesión te pide permiso o te hace una pregunta.
 
-Si no están, la notificación sale sin sonido.
+Si no están, la notificación suena con el sonido normal de Windows.
 Conviene que no tengan silencio al principio, para que suenen a la vez que aparece la notificación.
 Páginas para buscar sonidos: [Mixkit](https://mixkit.co/free-sound-effects/), [Pixabay](https://pixabay.com/sound-effects/),
 [Myinstants](https://www.myinstants.com).

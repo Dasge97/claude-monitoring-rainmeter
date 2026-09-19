@@ -10,7 +10,7 @@ const BASE = __dirname;
 const DIR_SESIONES = path.join(BASE, 'sesiones');
 const PANEL = path.join(BASE, 'panel.txt');
 const HORAS_CADUCIDAD = 12;
-// Sonidos de los avisos (.wav). Si no existen, la notificación sale sin sonido. Ver README.
+// Sonidos de los avisos (.wav). Si no existen, la notificación suena con el sonido de Windows. Ver README.
 const SONIDO_TERMINADO = 'sonidos/terminado.wav';
 const SONIDO_NECESITA = 'sonidos/necesita.wav';
 

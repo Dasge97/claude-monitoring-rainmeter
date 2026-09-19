@@ -10,3 +10,6 @@ panel.txt
 sesiones/
 errores.log
 *.tmp
+
+# ZIP generado por empaquetar.ps1
+dist/

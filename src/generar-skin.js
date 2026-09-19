@@ -7,8 +7,10 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// Carpeta de skins de Rainmeter: la de Rainmeter.ini (SkinPath=) o la de por defecto en Documentos.
+// Carpeta de skins de Rainmeter: la que calcula instalar.ps1 (PANEL_SKINS), la de Rainmeter.ini (SkinPath=)
+// o la de por defecto en Documentos.
 function carpetaSkins() {
+  if (process.env.PANEL_SKINS) return process.env.PANEL_SKINS;
   try {
     const ini = fs.readFileSync(path.join(process.env.APPDATA, 'Rainmeter', 'Rainmeter.ini'), 'utf8');
     const m = ini.replace(/\0/g, '').match(/^SkinPath=(.+)$/m);

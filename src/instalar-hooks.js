@@ -1,5 +1,5 @@
 // Añade el hook del panel a %USERPROFILE%\.claude\settings.json sin tocar lo que ya hay.
-// Lo ejecuta instalar.ps1. Si el hook ya está, solo actualiza su timeout. Guarda una copia antes de escribir.
+// Lo ejecuta instalar.ps1. Si el hook ya está, actualiza su comando y su timeout. Guarda una copia antes de escribir.
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -12,14 +12,18 @@ if (fs.existsSync(ruta)) {
 }
 s.hooks = s.hooks || {};
 
+// Ruta completa de node.exe: si Node se acaba de instalar, Claude Code aún no lo tiene en su PATH.
+const node = process.execPath.replace(/\\/g, '/');
 const script = path.join(__dirname, 'hook.js').replace(/\\/g, '/');
-const comando = `node "${script}"`;
+const comando = `"${node}" "${script}"`;
+const esDelPanel = h => (h.command || '').includes('panel-sesiones/hook.js');
 const eventos = ['SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'Notification', 'Stop', 'SessionEnd'];
 
 for (const ev of eventos) {
   s.hooks[ev] = s.hooks[ev] || [];
-  const existente = s.hooks[ev].flatMap(g => g.hooks || []).find(h => h.command === comando);
+  const existente = s.hooks[ev].flatMap(g => g.hooks || []).find(esDelPanel);
   if (existente) {
+    existente.command = comando;
     existente.timeout = 10;
     continue;
   }
