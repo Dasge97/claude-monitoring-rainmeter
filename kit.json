@@ -1,0 +1,47 @@
+{
+  "kit": 1,
+  "paquete": "claude-monitoring-rainmeter",
+  "instalar": "powershell -NoProfile -ExecutionPolicy Bypass -File \"{dir}/instalar.ps1\"",
+  "desinstalar": "powershell -NoProfile -ExecutionPolicy Bypass -File \"{dir}/desinstalar.ps1\"",
+  "actualizar": "powershell -NoProfile -ExecutionPolicy Bypass -File \"{dir}/instalar.ps1\"",
+
+  "id": "panel-claude-rainmeter",
+  "nombre": "Panel de sesiones de Claude",
+  "descripcion": "Hooks de Claude Code que alimentan un panel de Rainmeter con el estado de cada sesión y lanzan notificaciones de Windows.",
+  "tipo": "hook",
+  "proyecto": "{dir}",
+  "estado_ruta": "%USERPROFILE%/.claude/panel-sesiones/estado-ruta.txt",
+  "comprobar": {
+    "ficheros": [
+      "%USERPROFILE%/.claude/panel-sesiones/hook.js"
+    ],
+    "fichero_contiene": {
+      "fichero": "%USERPROFILE%/.claude/settings.json",
+      "texto": "panel-sesiones/hook.js"
+    },
+    "proceso_contiene": "Rainmeter/Rainmeter.exe"
+  },
+  "interruptores": [
+    {
+      "id": "avisos",
+      "etiqueta": "Notificaciones de Windows",
+      "fichero": "%USERPROFILE%/.claude/panel-sesiones/avisos.txt",
+      "encendido": "1",
+      "apagado": "0",
+      "si_no_existe": true,
+      "despues": "\"%ProgramFiles%/Rainmeter/Rainmeter.exe\" !Refresh PanelClaude & node \"%USERPROFILE%/.claude/panel-sesiones/hook.js\" --estado",
+      "horario": {
+        "apagar": "23:00",
+        "encender": "08:00"
+      }
+    }
+  ],
+  "acciones": {
+    "arrancar": "\"%ProgramFiles%/Rainmeter/Rainmeter.exe\"",
+    "parar": null,
+    "abrir": null
+  },
+  "registro": "%USERPROFILE%/.claude/panel-sesiones/errores.log",
+  "caducidad_minutos": null,
+  "ntfy": null
+}

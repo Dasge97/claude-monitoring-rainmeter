@@ -15,6 +15,11 @@ const HORAS_CADUCIDAD = 12;
 // Sonidos de los avisos (.wav). Si no existen, la notificación suena con el sonido de Windows. Ver README.
 const SONIDO_TERMINADO = 'sonidos/terminado.wav';
 const SONIDO_NECESITA = 'sonidos/necesita.wav';
+// Opcional, para el panel KitDani: si existe, su primera línea es la ruta donde dejar un estado.json.
+// Lo escribe el Kit al importar la herramienta y lo borra al quitarla. Si no existe, no se escribe nada.
+const RUTA_ESTADO = path.join(BASE, 'estado-ruta.txt');
+// Hora y texto de la última notificación, para el estado.json.
+const ULTIMO_AVISO = path.join(BASE, 'ultimo-aviso.json');
 
 function leerEntrada() {
   try {
@@ -244,9 +249,85 @@ function regenerarPanel() {
     return [s.estado, nombre, s.detalle, Math.floor(s.ts), s.carpeta, s.pid || 0, Math.floor(s.inicio)].join('\t');
   });
   escribirAtomico(PANEL, lineas.join('\n') + '\n');
+  escribirEstadoKit(sesiones);
+}
+
+function dosCifras(n) {
+  return String(n).padStart(2, '0');
+}
+
+// Fecha ISO 8601 con la zona horaria local, p. ej. 2026-10-10T00:14:18+02:00.
+function isoLocal(d) {
+  const off = -d.getTimezoneOffset();
+  const zona = (off >= 0 ? '+' : '-') + dosCifras(Math.floor(Math.abs(off) / 60)) + ':' + dosCifras(Math.abs(off) % 60);
+  return d.getFullYear() + '-' + dosCifras(d.getMonth() + 1) + '-' + dosCifras(d.getDate()) + 'T' +
+    dosCifras(d.getHours()) + ':' + dosCifras(d.getMinutes()) + ':' + dosCifras(d.getSeconds()) + zona;
+}
+
+// "22:44" si es de hoy, "09/10 22:44" si es de otro día.
+function horaCorta(segundos) {
+  const d = new Date(segundos * 1000);
+  const hora = dosCifras(d.getHours()) + ':' + dosCifras(d.getMinutes());
+  return d.toDateString() === new Date().toDateString() ? hora : dosCifras(d.getDate()) + '/' + dosCifras(d.getMonth() + 1) + ' ' + hora;
+}
+
+// estado.json para KitDani (formato en el README). Solo si existe estado-ruta.txt.
+// Corre en cada evento: un intento y sin esperas. Si el rename falla, lo escribirá el siguiente evento.
+function escribirEstadoKit(sesiones) {
+  let destino;
+  try {
+    destino = fs.readFileSync(RUTA_ESTADO, 'utf8').split(/\r?\n/)[0].trim();
+  } catch {
+    return;
+  }
+  if (!destino) return;
+  let tmp = null;
+  try {
+    const n = sesiones.length;
+    const necesitan = sesiones.filter(s => s.estado === 'rojo').length;
+    const trabajando = sesiones.filter(s => s.estado === 'amarillo').length;
+    const avisos = avisosActivados();
+    let ultimo = 'ninguna';
+    try {
+      const u = JSON.parse(fs.readFileSync(ULTIMO_AVISO, 'utf8'));
+      if (u.ts) ultimo = horaCorta(u.ts) + ' · ' + u.texto;
+    } catch {}
+
+    const partes = [];
+    if (necesitan) partes.push(necesitan + (necesitan === 1 ? ' te necesita' : ' te necesitan'));
+    if (trabajando) partes.push(trabajando + ' trabajando');
+    let mensaje = n === 0 ? 'Sin sesiones abiertas' : n + (n === 1 ? ' sesión' : ' sesiones') + (partes.length ? ': ' + partes.join(', ') : '');
+    if (!avisos) mensaje += '. Notificaciones apagadas';
+
+    const datos = {
+      estado: 'ok',
+      actualizado: isoLocal(new Date()),
+      mensaje,
+      indicadores: [
+        { etiqueta: 'Sesiones abiertas', valor: String(n) },
+        { etiqueta: 'Te necesitan', valor: String(necesitan) },
+        { etiqueta: 'Trabajando', valor: String(trabajando) },
+        { etiqueta: 'Notificaciones', valor: avisos ? 'Activadas' : 'Apagadas' },
+        { etiqueta: 'Última notificación', valor: ultimo },
+      ],
+    };
+    fs.mkdirSync(path.dirname(destino), { recursive: true });
+    tmp = destino + '.' + process.pid + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(datos, null, 2) + '\n', 'utf8');
+    fs.renameSync(tmp, destino);
+  } catch {
+    if (tmp) try { fs.unlinkSync(tmp); } catch {}
+  }
 }
 
 function main() {
+  // node hook.js --estado: solo reescribe panel.txt y el estado.json del Kit, sin leer ningún evento.
+  // Lo usa el interruptor de avisos de KitDani para que el cambio se vea al momento.
+  if (process.argv.includes('--estado')) {
+    fs.mkdirSync(DIR_SESIONES, { recursive: true });
+    regenerarPanel();
+    return;
+  }
   const d = leerEntrada();
   if (!d || !d.session_id) return;
   fs.mkdirSync(DIR_SESIONES, { recursive: true });
@@ -332,6 +413,9 @@ function main() {
     const terminado = s.estado === 'verde';
     const titulo = (terminado ? '✅ ' : '🔴 ') + s.nombre + (terminado ? ' ha terminado' : ' te necesita');
     notificar(titulo, limpiar(aviso, 180), carpeta, terminado ? SONIDO_TERMINADO : SONIDO_NECESITA);
+    try {
+      fs.writeFileSync(ULTIMO_AVISO, JSON.stringify({ ts: ahora, texto: s.nombre + (terminado ? ' terminó' : ' te necesita') }));
+    } catch {}
   }
 
   escribirAtomico(ruta, JSON.stringify(s));

@@ -11,3 +11,5 @@ sesiones/
 errores.log
 *.tmp
 
+estado-ruta.txt
+ultimo-aviso.json

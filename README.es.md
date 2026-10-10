@@ -118,7 +118,21 @@ No envía nada fuera de tu PC.
 <details>
 <summary><b>¿Cómo lo desinstalo?</b></summary>
 
-Ver [Cómo funciona → Desinstalar](docs/como-funciona.md#desinstalar).
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File desinstalar.ps1
+```
+
+Quita solo los hooks del panel (los demás se quedan), la skin, el enlace `panelclaude://` y la carpeta instalada.
+Con `-EnSeco` dice lo que haría sin cambiar nada. Más detalle en [Cómo funciona → Desinstalar](docs/como-funciona.md#desinstalar).
+</details>
+
+<details>
+<summary><b>¿Se puede ver en KitDani?</b></summary>
+
+Sí. El repositorio trae un `kit.json` para importarlo en [KitDani](https://github.com/Dasge97/KitDani).
+Al importarlo, el Kit escribe `estado-ruta.txt` en `%USERPROFILE%\.claude\panel-sesiones` y, desde entonces,
+`hook.js` deja en cada evento un `estado.json` con las sesiones abiertas, cuántas te necesitan, cuántas trabajan,
+si las notificaciones están activadas y la última notificación. Sin ese fichero no escribe nada.
 </details>
 
 ---

@@ -122,6 +122,8 @@ Each event starts a short Node.js process: about 50-60 ms on a normal PC. Only n
 
 ## Uninstall
 
+`desinstalar.ps1` does these steps (`-EnSeco` to see what it would do). By hand:
+
 1. In Rainmeter, unload the `PanelClaude` skin and delete its folder in the skins folder.
 2. Remove from `%USERPROFILE%\.claude\settings.json` the hooks whose command contains `panel-sesiones/hook.js`.
    The installer left a copy of the previous file in `settings.json.antes-panel-sesiones.bak`.

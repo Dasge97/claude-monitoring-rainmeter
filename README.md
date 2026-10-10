@@ -120,7 +120,21 @@ Nothing is sent outside your PC.
 <details>
 <summary><b>How do I uninstall it?</b></summary>
 
-See [How it works → Uninstall](docs/how-it-works.md#uninstall).
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File desinstalar.ps1
+```
+
+It removes only the panel's hooks (any others stay), the skin, the `panelclaude://` link and the installed folder.
+With `-EnSeco` it shows what it would do without changing anything. More in [How it works → Uninstall](docs/how-it-works.md#uninstall).
+</details>
+
+<details>
+<summary><b>Can I see it in KitDani?</b></summary>
+
+Yes. The repository includes a `kit.json` to import it into [KitDani](https://github.com/Dasge97/KitDani).
+On import, the Kit writes `estado-ruta.txt` to `%USERPROFILE%\.claude\panel-sesiones` and from then on
+`hook.js` writes an `estado.json` on every event with the open sessions, how many need you, how many are working,
+whether notifications are on and the last notification. Without that file it writes nothing.
 </details>
 
 ---
