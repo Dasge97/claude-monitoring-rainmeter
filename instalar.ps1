@@ -172,6 +172,22 @@ if (-not $enInicio) {
     $acceso.Save()
 }
 
+# Aunque el acceso directo exista, Windows puede tenerlo deshabilitado en "Aplicaciones de arranque"
+# (Administrador de tareas). La marca se guarda por nombre de fichero y sobrevive a borrar y recrear
+# el acceso directo. Primer byte 02 = habilitado, 03 = deshabilitado.
+foreach ($clave in 'StartupFolder', 'Run') {
+    $ruta = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\$clave"
+    $props = Get-ItemProperty $ruta -ErrorAction SilentlyContinue
+    if (-not $props) { continue }
+    foreach ($nombre in $props.PSObject.Properties.Name | Where-Object { $_ -like 'Rainmeter*' }) {
+        $valor = $props.$nombre
+        if ($valor -is [byte[]] -and $valor[0] -ne 2) {
+            Paso "Rainmeter estaba deshabilitado en las aplicaciones de arranque de Windows. Habilitándolo"
+            Set-ItemProperty -Path $ruta -Name $nombre -Value ([byte[]](2,0,0,0,0,0,0,0,0,0,0,0))
+        }
+    }
+}
+
 Write-Host ''
 Write-Host 'Instalado.' -ForegroundColor Green
 if (-not (Get-ChildItem (Join-Path $destino 'sonidos') -Filter *.wav -ErrorAction SilentlyContinue)) {
